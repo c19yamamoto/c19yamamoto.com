@@ -10,6 +10,10 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  // CDKディレクトリを除外する設定
+  {
+    ignores: ["cdk/**/*"]
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 
