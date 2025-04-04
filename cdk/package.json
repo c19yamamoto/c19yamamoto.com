@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "postinstall": "npm audit fix"
   },
   "devDependencies": {
     "@types/jest": "29.5.14",
@@ -20,7 +21,6 @@
     "typescript": "~5.8.2"
   },
   "dependencies": {
-    "@aws-cdk/aws-route53-targets": "1.204.0",
     "aws-cdk-lib": "2.188.0",
     "constructs": "10.4.2",
     "dotenv": "16.4.7"
