@@ -1,40 +1,124 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Next.js + AWS CDK (CloudFront + S3) プロジェクト
 
-## Getting Started
+このプロジェクトは、Next.js で構築された静的サイトを AWS CDK を使用して CloudFront + S3 構成でホスティングするためのテンプレートです。
 
-First, run the development server:
+## 開発環境のセットアップ
+
+### 前提条件
+
+- Node.js (v16以上)
+- AWS CLI がインストールされ、設定済み
+- AWS CDK がインストールされていること (`npm install -g aws-cdk`)
+
+### ローカル開発
+
+開発サーバーを起動します:
 
 ```bash
 npm run dev
-# or
+# または
 yarn dev
-# or
+# または
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000) をブラウザで開いて結果を確認できます。
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+`pages/index.tsx` を編集することでページの編集を開始できます。ファイルを編集すると、ページが自動的に更新されます。
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## AWS へのデプロイ
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+### 1. 環境設定
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`cdk/.env` ファイルにドメイン名を設定します:
 
-## Learn More
+```
+DOMAIN_NAME=example.com
+```
 
-To learn more about Next.js, take a look at the following resources:
+注意: Route53 でドメインが登録済みであることを確認してください。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+### 2. Next.js アプリケーションのビルド
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+静的サイトとして Next.js アプリケーションをビルドします:
 
-## Deploy on Vercel
+```bash
+npm run build
+# または
+yarn build
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+これにより、`out` ディレクトリに静的ファイルが生成されます。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+### 3. AWS CDK のデプロイ
+
+初めて CDK をデプロイする場合は、ブートストラップが必要です:
+
+```bash
+cd cdk
+cdk bootstrap
+```
+
+その後、CDK スタックをデプロイします:
+
+```bash
+cd cdk
+cdk deploy
+```
+
+デプロイが完了すると、CloudFront のドメイン名と設定したカスタムドメインの URL が表示されます。
+
+### 4. DNS の伝播を待つ
+
+Route53 の DNS 変更が伝播するまで数分から数時間かかる場合があります。その後、設定したドメイン名でウェブサイトにアクセスできるようになります。
+
+## GitHub Actions を使用したデプロイ
+
+このプロジェクトでは、GitHub Actions を使用して CI/CD パイプラインを構築しています。手動トリガーでデプロイを実行できます。
+
+### 1. GitHub Secrets の設定
+
+GitHub リポジトリの Settings > Secrets and variables > Actions で以下のシークレットを設定します:
+
+- `AWS_ACCESS_KEY_ID`: AWS アクセスキー ID
+- `AWS_SECRET_ACCESS_KEY`: AWS シークレットアクセスキー
+- `AWS_REGION`: AWS リージョン（例: `ap-northeast-1`）
+
+注意: AWS IAM ユーザーには、CloudFront、S3、Route53、ACM などの必要なサービスへのアクセス権限が必要です。
+
+### 2. 手動デプロイの実行
+
+1. GitHub リポジトリの "Actions" タブに移動します
+2. 左側のサイドバーから "Deploy" ワークフローを選択します
+3. "Run workflow" ボタンをクリックします
+4. "Run workflow" ボタンをクリックしてデプロイを開始します
+
+デプロイが完了すると、ワークフローの実行ログで結果を確認できます。
+
+## アーキテクチャ
+
+このプロジェクトは以下の AWS リソースを使用しています:
+
+- **S3 バケット**: Next.js の静的ビルド成果物を保存
+- **CloudFront**: コンテンツ配信とキャッシュ
+- **Route53**: DNS 設定
+- **ACM**: SSL/TLS 証明書
+
+## 更新とメンテナンス
+
+コンテンツを更新する場合は、Next.js アプリケーションを再ビルドし、CDK スタックを再デプロイします:
+
+```bash
+# Next.js アプリケーションをビルド
+npm run build
+
+# CDK スタックをデプロイ
+cd cdk
+cdk deploy
+```
+
+## トラブルシューティング
+
+- **証明書の検証エラー**: ACM 証明書の検証に時間がかかる場合があります。Route53 のホストゾーンが正しく設定されていることを確認してください。
+- **アクセス権限エラー**: AWS CLI の設定が正しいことを確認し、必要な IAM 権限があることを確認してください。
+- **デプロイエラー**: CDK デプロイログを確認して、具体的なエラーメッセージを確認してください。
