@@ -9,12 +9,18 @@ import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
+import { CertificateStack } from './certificate-stack';
 
 // .env ファイルから環境変数を読み込む
 dotenv.config();
 
+// StackPropsを拡張して証明書スタックを含めるインターフェース
+interface CdkStackProps extends cdk.StackProps {
+  certificateStack?: CertificateStack;
+}
+
 export class CdkStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: CdkStackProps) {
     super(scope, id, props);
 
     // 環境変数からドメイン名を取得
@@ -28,27 +34,36 @@ export class CdkStack extends cdk.Stack {
       domainName: domainName,
     });
 
-    // SSL証明書の作成
-    // 注意: CloudFrontで使用する証明書は us-east-1 リージョンに作成する必要があります
-    // Certificate クラスでは region プロパティは使用できないため、CDKのデプロイ時に --region us-east-1 を指定するか
-    // 証明書用の別スタックを us-east-1 リージョンに作成する必要があります
-    const certificate = new acm.Certificate(this, 'Certificate', {
-      domainName: domainName,
-      validation: acm.CertificateValidation.fromDns(hostedZone)
-    });
+    // SSL証明書の参照
+    // 証明書スタックから証明書を取得するか、証明書スタックが提供されていない場合は新しく作成
+    let certificate: acm.ICertificate;
+    
+    if (props?.certificateStack) {
+      // us-east-1リージョンの証明書スタックから証明書を参照
+      certificate = props.certificateStack.certificate;
+      console.log('Using certificate from us-east-1 region:', certificate.certificateArn);
+    } else {
+      // 証明書スタックが提供されていない場合は、警告を出して現在のリージョンに証明書を作成
+      // 注意: CloudFrontで使用する場合、これはus-east-1でない限り機能しません
+      console.warn('WARNING: Creating certificate in the current region. This may not work with CloudFront if the region is not us-east-1.');
+      certificate = new acm.Certificate(this, 'Certificate', {
+        domainName: domainName,
+        validation: acm.CertificateValidation.fromDns(hostedZone)
+      });
+    }
 
     // S3バケットの作成（静的ウェブサイトホスティング用）
     const websiteBucket = new s3.Bucket(this, 'WebsiteBucket', {
       bucketName: `${domainName}-website`,
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL, // CloudFrontからのみアクセス可能
-      removalPolicy: cdk.RemovalPolicy.DESTROY, // スタック削除時にバケットも削除（開発環境用）
-      autoDeleteObjects: true, // スタック削除時にオブジェクトも削除（開発環境用）
+      websiteIndexDocument: 'index.html',
+      websiteErrorDocument: 'index.html', // SPAのためのフォールバック
+      publicReadAccess: true, // 静的ウェブサイトホスティングには公開アクセスが必要
     });
 
     // CloudFront ディストリビューションの作成
     const distribution = new cloudfront.Distribution(this, 'Distribution', {
       defaultBehavior: {
-        origin: new origins.S3Origin(websiteBucket),
+        origin: new origins.S3StaticWebsiteOrigin(websiteBucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
       },
