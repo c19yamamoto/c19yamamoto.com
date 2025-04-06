@@ -32,6 +32,32 @@
   flex-direction: column;
   gap: 32px;
   grid-row-start: 2;
+  align-items: center;
+}
+
+.profileContainer {
+  margin-bottom: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileImage {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.profileName {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
 .main ol {

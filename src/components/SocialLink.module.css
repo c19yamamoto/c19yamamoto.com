@@ -1,0 +1,21 @@
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--gray-alpha-100);
+  color: var(--foreground);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.socialLink:hover {
+  background-color: var(--gray-alpha-200);
+  transform: scale(1.05);
+}
+
+.socialLink svg {
+  width: 24px;
+  height: 24px;
+}
