@@ -8,36 +8,37 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: リポジトリのチェックアウト
+      - name: Checkout Repository
         uses: actions/checkout@v4
       
-      - name: Node.js のセットアップ
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
       
-      - name: 依存関係のインストール
+      - name: Install Dependencies
         run: npm ci
       
-      - name: Next.js のビルド
+      - name: Build Project
         run: npm run build
       
-      - name: AWS 認証情報の設定
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
       
-      - name: CDK の依存関係のインストール
+      - name: Install CDK Dependencies
         run: |
           cd cdk
           npm ci
       
-      - name: CDK のデプロイ
+      - name: Deploy CDK Stack
         run: |
           cd cdk
           npx cdk deploy --all --require-approval never
         env:
+          # Set the environment variables for the CDK deployment
           DOMAIN_NAME: c19yamamoto.com
