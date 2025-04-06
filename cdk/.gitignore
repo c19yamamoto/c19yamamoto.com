@@ -8,4 +8,5 @@ node_modules
 cdk.out
 .env
 
+# CDK context
 cdk.context.json
