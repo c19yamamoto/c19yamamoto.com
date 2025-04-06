@@ -52,18 +52,16 @@ export class CdkStack extends cdk.Stack {
       });
     }
 
-    // S3バケットの作成（静的ウェブサイトホスティング用）
+    // S3バケットの作成（通常のバケットとして設定）
     const websiteBucket = new s3.Bucket(this, 'WebsiteBucket', {
       bucketName: `${domainName}-website`,
-      websiteIndexDocument: 'index.html',
-      websiteErrorDocument: 'index.html', // SPAのためのフォールバック
-      publicReadAccess: true, // 静的ウェブサイトホスティングには公開アクセスが必要
+      // 静的ウェブサイトホスティング設定とパブリックアクセスを削除
     });
 
     // CloudFront ディストリビューションの作成
     const distribution = new cloudfront.Distribution(this, 'Distribution', {
       defaultBehavior: {
-        origin: new origins.S3StaticWebsiteOrigin(websiteBucket),
+        origin: new origins.S3Origin(websiteBucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
       },
