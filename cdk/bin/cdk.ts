@@ -1,20 +1,39 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
 import { CdkStack } from '../lib/cdk-stack';
+import { CertificateStack } from '../lib/certificate-stack';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = new cdk.App();
-new CdkStack(app, 'CdkStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+const commonTags = {
+  Environment: 'Production',
+  Project: 'NextJsStaticSite',
+};
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
+const createCertificateStack = (app: cdk.App): CertificateStack => 
+  new CertificateStack(app, 'NextJsCertificateStack', {
+    env: { 
+      account: process.env.CDK_DEFAULT_ACCOUNT, 
+      region: 'us-east-1'
+    },
+    description: 'ACM Certificate for CloudFront in us-east-1 region',
+    tags: commonTags,
+  });
 
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
-});
+const createMainStack = (app: cdk.App, certStack: CertificateStack): CdkStack =>
+  new CdkStack(app, 'NextJsCloudFrontS3Stack', {
+    env: { 
+      account: process.env.CDK_DEFAULT_ACCOUNT, 
+      region: process.env.CDK_DEFAULT_REGION 
+    },
+    description: 'Next.js static site hosted on CloudFront and S3 with Route53 domain',
+    tags: commonTags,
+    crossRegionReferences: true,
+    certificateStack: certStack
+  });
+
+const certStack = createCertificateStack(app);
+createMainStack(app, certStack);
