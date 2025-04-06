@@ -9,15 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.7.2",
-    "@fortawesome/free-brands-svg-icons": "^6.7.2",
-    "@fortawesome/free-solid-svg-icons": "^6.7.2",
-    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@fortawesome/fontawesome-svg-core": "6.7.2",
+    "@fortawesome/free-brands-svg-icons": "6.7.2",
+    "@fortawesome/free-solid-svg-icons": "6.7.2",
+    "@fortawesome/react-fontawesome": "0.2.2",
     "aws-cdk": "2.1007.0",
     "next": "15.2.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "sass": "^1.86.3"
+    "sass": "1.86.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3",
