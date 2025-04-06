@@ -1,0 +1,11 @@
+.socialIcons {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  
+  @media (max-width: 600px) {
+    gap: 12px;
+  }
+}

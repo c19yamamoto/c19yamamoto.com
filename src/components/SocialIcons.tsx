@@ -1,6 +1,8 @@
 import React from 'react';
 import SocialLink from './SocialLink';
-import styles from './SocialIcons.module.css';
+import styles from './SocialIcons.module.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCompass } from '@fortawesome/free-solid-svg-icons';
 
 const SocialIcons: React.FC = () => {
   return (
@@ -38,6 +40,11 @@ const SocialIcons: React.FC = () => {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
           <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
         </svg>
+      </SocialLink>
+
+      {/* connpass */}
+      <SocialLink href="https://connpass.com/user/c19yamamoto/" label="connpass">
+        <FontAwesomeIcon icon={faCompass} width="24" height="24" />
       </SocialLink>
     </div>
   );

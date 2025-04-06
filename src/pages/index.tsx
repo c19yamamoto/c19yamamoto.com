@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { Geist, Geist_Mono } from "next/font/google";
-import styles from "@/styles/Home.module.css";
+import styles from "@/styles/Home.module.scss";
 import UnderConstruction from "@/components/UnderConstruction";
 
 const geistSans = Geist({
@@ -20,12 +20,16 @@ export default function Home() {
         <title>c19yamamoto.com - Under Construction</title>
         <meta name="description" content="c19yamamoto's personal website - currently under construction." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/profile.jpeg" />
       </Head>
       <div
         className={`${styles.page} ${geistSans.variable} ${geistMono.variable}`}
       >
         <main className={styles.main}>
+          <div className={styles.profileContainer}>
+            <img src="/profile.jpeg" alt="Profile" className={styles.profileImage} />
+            <h1 className={styles.profileName}>c19yamamoto</h1>
+          </div>
           <UnderConstruction />
         </main>
       </div>
