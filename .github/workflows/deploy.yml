@@ -38,6 +38,6 @@ jobs:
       - name: CDK のデプロイ
         run: |
           cd cdk
-          npx cdk deploy --require-approval never
+          npx cdk deploy --all
         env:
           DOMAIN_NAME: c19yamamoto.com
