@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './SocialLink.module.scss';
+import styles from './styles.module.scss';
 
 type SocialLinkProps = {
   href: string;

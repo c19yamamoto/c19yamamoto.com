@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { Geist, Geist_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.scss";
-import UnderConstruction from "@/components/UnderConstruction";
+import ProfileSection from "@/components/ProfileSection";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,8 +17,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>c19yamamoto.com - Under Construction</title>
-        <meta name="description" content="c19yamamoto's personal website - currently under construction." />
+        <title>c19yamamoto.com</title>
+        <meta name="description" content="c19yamamoto's personal website" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/profile.jpeg" />
       </Head>
@@ -30,7 +30,7 @@ export default function Home() {
             <img src="/profile.jpeg" alt="Profile" className={styles.profileImage} />
             <h1 className={styles.profileName}>c19yamamoto</h1>
           </div>
-          <UnderConstruction />
+          <ProfileSection />
         </main>
       </div>
     </>
