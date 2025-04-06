@@ -1,6 +1,6 @@
 import React from 'react';
-import SocialLink from './SocialLink';
-import styles from './SocialIcons.module.scss';
+import SocialLink from '../SocialLink';
+import styles from './styles.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCompass } from '@fortawesome/free-solid-svg-icons';
 
