@@ -7,7 +7,7 @@ const UnderConstruction: React.FC = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>My website is currently under construction.</h1>
       <p className={styles.message}>
-        新しいウェブサイトを準備中です。しばらくお待ちください。
+        ウェブサイトを準備中です。しばらくお待ちください。
       </p>
       <SocialIcons />
     </div>
