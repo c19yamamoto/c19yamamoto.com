@@ -3,12 +3,12 @@ name: Deploy
 on:
   workflow_dispatch:
 
-permissions:
-  id-token: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout Repository
