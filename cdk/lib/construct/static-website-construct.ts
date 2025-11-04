@@ -6,6 +6,7 @@ import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as path from 'path';
 import { CloudFrontToS3 } from '@aws-solutions-constructs/aws-cloudfront-s3';
+import { EnableLogging } from 'aws-cdk-lib/aws-kinesisfirehose';
 
 export interface StaticWebsiteProps {
   /**
@@ -45,11 +46,15 @@ export class StaticWebsite extends Construct {
     this.cloudFrontToS3 = new CloudFrontToS3(this, 'CloudFrontToS3', {
       bucketProps: {
         bucketName: `${props.domainName}-website`,
+        // Disable server access logging
+        serverAccessLogsBucket: undefined
       },
       cloudFrontDistributionProps: {
         domainNames: [props.domainName],
         certificate: props.certificate,
         defaultRootObject: 'index.html',
+        // Disable logging
+        enableLogging: false,
         errorResponses: [
           {
             // For SPA routing: redirect 404 errors to index.html with 200 status
