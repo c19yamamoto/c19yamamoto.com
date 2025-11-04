@@ -3,14 +3,14 @@ import { Construct } from 'constructs';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as dotenv from 'dotenv';
-import { NextJsWebsite } from './nextjs-website-construct';
+import { StaticWebsite } from './static-website-construct';
 
 dotenv.config();
 
-export class CdkStack extends cdk.Stack {
+export class StaticWebsiteStack extends cdk.Stack {
   private readonly domainName: string;
   private readonly certificate: acm.ICertificate;
-  private readonly website: NextJsWebsite;
+  private readonly website: StaticWebsite;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -25,7 +25,7 @@ export class CdkStack extends cdk.Stack {
     this.certificate = this.createCertificate(hostedZone);
     
     // Create the website construct
-    this.website = new NextJsWebsite(this, 'Website', {
+    this.website = new StaticWebsite(this, 'Website', {
       domainName: this.domainName,
       hostedZone,
       certificate: this.certificate,
