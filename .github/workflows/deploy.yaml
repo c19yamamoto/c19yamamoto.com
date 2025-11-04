@@ -33,11 +33,9 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
 
       - name: Install CDK Dependencies
-        run: |
-          cd cdk
-          npm ci
+        working-directory: cdk
+        run: npm ci
 
       - name: Deploy CDK Stack
-        run: |
-          cd cdk
-          npx cdk deploy --all --require-approval never -c domainName=c19yamamoto.com
+        working-directory: cdk
+        run: npx cdk deploy --all --require-approval never -c domainName=c19yamamoto.com
