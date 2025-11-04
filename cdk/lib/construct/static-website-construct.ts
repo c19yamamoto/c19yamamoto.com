@@ -52,6 +52,8 @@ export class StaticWebsite extends Construct {
         defaultRootObject: 'index.html',
         errorResponses: [
           {
+            // For SPA routing: redirect 404 errors to index.html with 200 status
+            // This allows client-side routing to handle all paths
             httpStatus: 404,
             responseHttpStatus: 200,
             responsePagePath: '/index.html',

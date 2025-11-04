@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
 import { StaticWebsiteStack } from '../lib/stack/static-website-stack';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
 
 const app = new cdk.App();
 
