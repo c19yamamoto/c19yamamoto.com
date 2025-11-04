@@ -3,7 +3,7 @@ import { Construct } from 'constructs';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as dotenv from 'dotenv';
-import { StaticWebsite } from './static-website-construct';
+import { StaticWebsite } from '../construct/static-website-construct';
 
 dotenv.config();
 
@@ -35,28 +35,28 @@ export class StaticWebsiteStack extends cdk.Stack {
     this.createOutputs();
   }
 
-  private getDomainName(): string {
+  private getDomainName = (): string => {
     const domainName = process.env.DOMAIN_NAME;
     if (!domainName) {
       throw new Error('DOMAIN_NAME environment variable is not set in .env file');
     }
     return domainName;
-  }
+  };
 
-  private getHostedZone(): route53.IHostedZone {
+  private getHostedZone = (): route53.IHostedZone => {
     return route53.HostedZone.fromLookup(this, 'HostedZone', {
       domainName: this.domainName,
     });
-  }
+  };
 
-  private createCertificate(hostedZone: route53.IHostedZone): acm.ICertificate {
+  private createCertificate = (hostedZone: route53.IHostedZone): acm.ICertificate => {
     return new acm.Certificate(this, 'Certificate', {
       domainName: this.domainName,
       validation: acm.CertificateValidation.fromDns(hostedZone),
     });
-  }
+  };
 
-  private createOutputs(): void {
+  private createOutputs = (): void => {
     new cdk.CfnOutput(this, 'DistributionDomainName', {
       value: this.website.cloudFrontToS3.cloudFrontWebDistribution.distributionDomainName,
       description: 'CloudFront Distribution Domain Name',
@@ -71,5 +71,5 @@ export class StaticWebsiteStack extends cdk.Stack {
       value: this.certificate.certificateArn,
       description: 'ACM Certificate ARN',
     });
-  }
+  };
 }

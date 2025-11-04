@@ -1,9 +1,9 @@
 // import * as cdk from 'aws-cdk-lib';
 // import { Template } from 'aws-cdk-lib/assertions';
-// import * as StaticWebsite from '../lib/static-website-stack';
+// import * as StaticWebsite from '../lib/stack/static-website-stack';
 
 // example test. To run these tests, uncomment this file along with the
-// example resource in lib/static-website-stack.ts
+// example resource in lib/stack/static-website-stack.ts
 test('SQS Queue Created', () => {
 //   const app = new cdk.App();
 //     // WHEN
