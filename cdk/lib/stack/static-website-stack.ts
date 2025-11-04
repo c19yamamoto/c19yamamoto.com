@@ -7,29 +7,20 @@ import { StaticWebsite } from '../construct/static-website-construct';
 export class StaticWebsiteStack extends cdk.Stack {
   private readonly domainName: string;
   private readonly certificate: acm.ICertificate;
-  private readonly website: StaticWebsite;
+  public readonly website: StaticWebsite;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
-
-    // Get domain name from CDK context
+    super(scope, id, props);    
     this.domainName = this.getDomainName();
-    
-    // Get the existing hosted zone
+
     const hostedZone = this.getHostedZone();
-    
-    // Create SSL certificate in us-east-1 for CloudFront
     this.certificate = this.createCertificate(hostedZone);
     
-    // Create the website construct
     this.website = new StaticWebsite(this, 'Website', {
       domainName: this.domainName,
       hostedZone,
       certificate: this.certificate,
     });
-    
-    // Output CloudFront and website URLs
-    this.createOutputs();
   }
 
   private getDomainName(): string {
@@ -50,23 +41,6 @@ export class StaticWebsiteStack extends cdk.Stack {
     return new acm.Certificate(this, 'Certificate', {
       domainName: this.domainName,
       validation: acm.CertificateValidation.fromDns(hostedZone),
-    });
-  }
-
-  private createOutputs(): void {
-    new cdk.CfnOutput(this, 'DistributionDomainName', {
-      value: this.website.cloudFrontToS3.cloudFrontWebDistribution.distributionDomainName,
-      description: 'CloudFront Distribution Domain Name',
-    });
-
-    new cdk.CfnOutput(this, 'WebsiteURL', {
-      value: `https://${this.domainName}`,
-      description: 'Website URL',
-    });
-
-    new cdk.CfnOutput(this, 'CertificateArn', {
-      value: this.certificate.certificateArn,
-      description: 'ACM Certificate ARN',
     });
   }
 }
