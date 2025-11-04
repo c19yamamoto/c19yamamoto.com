@@ -43,18 +43,16 @@ export class StaticWebsiteStack extends cdk.Stack {
     return domainName;
   };
 
-  private getHostedZone = (): route53.IHostedZone => {
-    return route53.HostedZone.fromLookup(this, 'HostedZone', {
+  private getHostedZone = (): route53.IHostedZone =>
+    route53.HostedZone.fromLookup(this, 'HostedZone', {
       domainName: this.domainName,
     });
-  };
 
-  private createCertificate = (hostedZone: route53.IHostedZone): acm.ICertificate => {
-    return new acm.Certificate(this, 'Certificate', {
+  private createCertificate = (hostedZone: route53.IHostedZone): acm.ICertificate =>
+    new acm.Certificate(this, 'Certificate', {
       domainName: this.domainName,
       validation: acm.CertificateValidation.fromDns(hostedZone),
     });
-  };
 
   private createOutputs = (): void => {
     new cdk.CfnOutput(this, 'DistributionDomainName', {
