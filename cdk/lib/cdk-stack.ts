@@ -1,14 +1,13 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
-import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
+import { CloudFrontToS3 } from '@aws-solutions-constructs/aws-cloudfront-s3';
 import { CertificateStack } from './certificate-stack';
 
 dotenv.config();
@@ -21,8 +20,7 @@ export class CdkStack extends cdk.Stack {
   private readonly domainName: string;
   private readonly hostedZone: route53.IHostedZone;
   private readonly certificate: acm.ICertificate;
-  private readonly websiteBucket: s3.Bucket;
-  private readonly distribution: cloudfront.Distribution;
+  private readonly cloudFrontToS3: CloudFrontToS3;
 
   constructor(scope: Construct, id: string, props?: CdkStackProps) {
     super(scope, id, props);
@@ -36,11 +34,8 @@ export class CdkStack extends cdk.Stack {
     // Get or create SSL certificate
     this.certificate = this.getCertificate(props);
     
-    // Create S3 bucket for website content
-    this.websiteBucket = this.createWebsiteBucket();
-    
-    // Create CloudFront distribution
-    this.distribution = this.createCloudFrontDistribution();
+    // Create CloudFront distribution with S3 bucket using AWS Solutions Construct
+    this.cloudFrontToS3 = this.createCloudFrontToS3();
     
     // Create Route53 DNS record
     this.createDnsRecord();
@@ -80,51 +75,46 @@ export class CdkStack extends cdk.Stack {
     });
   }
 
-  private createWebsiteBucket(): s3.Bucket {
-    return new s3.Bucket(this, 'WebsiteBucket', {
-      bucketName: `${this.domainName}-website`,
-    });
-  }
-
-  private createCloudFrontDistribution(): cloudfront.Distribution {
-    return new cloudfront.Distribution(this, 'Distribution', {
-      defaultBehavior: {
-        origin: new origins.S3Origin(this.websiteBucket, {}),
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+  private createCloudFrontToS3(): CloudFrontToS3 {
+    return new CloudFrontToS3(this, 'CloudFrontToS3', {
+      bucketProps: {
+        bucketName: `${this.domainName}-website`,
       },
-      domainNames: [this.domainName],
-      certificate: this.certificate,
-      defaultRootObject: 'index.html',
-      errorResponses: [
-        {
-          httpStatus: 404,
-          responseHttpStatus: 200,
-          responsePagePath: '/index.html',
-        },
-      ],
+      cloudFrontDistributionProps: {
+        domainNames: [this.domainName],
+        certificate: this.certificate,
+        defaultRootObject: 'index.html',
+        errorResponses: [
+          {
+            httpStatus: 404,
+            responseHttpStatus: 200,
+            responsePagePath: '/index.html',
+          },
+        ],
+      },
+      insertHttpSecurityHeaders: false,
     });
   }
 
   private createDnsRecord(): route53.ARecord {
     return new route53.ARecord(this, 'AliasRecord', {
       zone: this.hostedZone,
-      target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(this.distribution)),
+      target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(this.cloudFrontToS3.cloudFrontWebDistribution)),
     });
   }
 
   private deployWebsiteContent(): s3deploy.BucketDeployment {
     return new s3deploy.BucketDeployment(this, 'DeployWebsite', {
       sources: [s3deploy.Source.asset(path.join(__dirname, '../../out'))],
-      destinationBucket: this.websiteBucket,
-      distribution: this.distribution,
+      destinationBucket: this.cloudFrontToS3.s3BucketInterface,
+      distribution: this.cloudFrontToS3.cloudFrontWebDistribution,
       distributionPaths: ['/*'],
     });
   }
 
   private createOutputs(): void {
     new cdk.CfnOutput(this, 'DistributionDomainName', {
-      value: this.distribution.distributionDomainName,
+      value: this.cloudFrontToS3.cloudFrontWebDistribution.distributionDomainName,
       description: 'CloudFront Distribution Domain Name',
     });
 
