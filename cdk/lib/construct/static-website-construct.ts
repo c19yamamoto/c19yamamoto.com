@@ -25,7 +25,7 @@ export interface StaticWebsiteProps {
 
   /**
    * Path to the SSG build output directory
-   * @default '../../out'
+   * @default '../../../out'
    */
   readonly buildOutputPath?: string;
 }
@@ -72,7 +72,7 @@ export class StaticWebsite extends Construct {
     });
 
     // Deploy SSG build output to S3
-    const buildOutputPath = props.buildOutputPath ?? '../../out';
+    const buildOutputPath = props.buildOutputPath ?? '../../../out';
     this.deployment = new s3deploy.BucketDeployment(this, 'DeployWebsite', {
       sources: [s3deploy.Source.asset(path.join(__dirname, buildOutputPath))],
       destinationBucket: this.cloudFrontToS3.s3BucketInterface,
