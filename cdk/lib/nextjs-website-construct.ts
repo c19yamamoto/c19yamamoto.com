@@ -1,0 +1,81 @@
+import { Construct } from 'constructs';
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as route53 from 'aws-cdk-lib/aws-route53';
+import * as targets from 'aws-cdk-lib/aws-route53-targets';
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import * as path from 'path';
+import { CloudFrontToS3 } from '@aws-solutions-constructs/aws-cloudfront-s3';
+
+export interface NextJsWebsiteProps {
+  /**
+   * Domain name for the website
+   */
+  readonly domainName: string;
+
+  /**
+   * Hosted zone for the domain
+   */
+  readonly hostedZone: route53.IHostedZone;
+
+  /**
+   * ACM certificate for CloudFront (must be in us-east-1)
+   */
+  readonly certificate: acm.ICertificate;
+
+  /**
+   * Path to the Next.js build output directory
+   * @default '../../out'
+   */
+  readonly buildOutputPath?: string;
+}
+
+/**
+ * Construct for deploying a Next.js static website with CloudFront, S3, and Route53
+ */
+export class NextJsWebsite extends Construct {
+  public readonly cloudFrontToS3: CloudFrontToS3;
+  public readonly dnsRecord: route53.ARecord;
+  public readonly deployment: s3deploy.BucketDeployment;
+
+  constructor(scope: Construct, id: string, props: NextJsWebsiteProps) {
+    super(scope, id);
+
+    // Create CloudFront distribution with S3 bucket using AWS Solutions Construct
+    this.cloudFrontToS3 = new CloudFrontToS3(this, 'CloudFrontToS3', {
+      bucketProps: {
+        bucketName: `${props.domainName}-website`,
+      },
+      cloudFrontDistributionProps: {
+        domainNames: [props.domainName],
+        certificate: props.certificate,
+        defaultRootObject: 'index.html',
+        errorResponses: [
+          {
+            httpStatus: 404,
+            responseHttpStatus: 200,
+            responsePagePath: '/index.html',
+          },
+        ],
+      },
+      insertHttpSecurityHeaders: false,
+    });
+
+    // Create Route53 DNS record
+    this.dnsRecord = new route53.ARecord(this, 'AliasRecord', {
+      zone: props.hostedZone,
+      target: route53.RecordTarget.fromAlias(
+        new targets.CloudFrontTarget(this.cloudFrontToS3.cloudFrontWebDistribution)
+      ),
+    });
+
+    // Deploy Next.js build output to S3
+    const buildOutputPath = props.buildOutputPath ?? '../../out';
+    this.deployment = new s3deploy.BucketDeployment(this, 'DeployWebsite', {
+      sources: [s3deploy.Source.asset(path.join(__dirname, buildOutputPath))],
+      destinationBucket: this.cloudFrontToS3.s3BucketInterface,
+      distribution: this.cloudFrontToS3.cloudFrontWebDistribution,
+      distributionPaths: ['/*'],
+    });
+  }
+}
