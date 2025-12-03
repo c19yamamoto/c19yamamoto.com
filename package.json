@@ -12,12 +12,12 @@
     "@fortawesome/fontawesome-svg-core": "7.1.0",
     "@fortawesome/free-brands-svg-icons": "7.1.0",
     "@fortawesome/free-solid-svg-icons": "7.1.0",
-    "@fortawesome/react-fontawesome": "3.1.0",
-    "aws-cdk": "2.1031.1",
-    "next": "16.0.1",
+    "@fortawesome/react-fontawesome": "3.1.1",
+    "aws-cdk": "2.1033.0",
+    "next": "16.0.6",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "sass": "1.93.3"
+    "sass": "1.94.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3",
@@ -26,7 +26,7 @@
     "@types/react": "19",
     "@types/react-dom": "19",
     "eslint": "9",
-    "eslint-config-next": "16.0.1",
+    "eslint-config-next": "16.0.6",
     "typescript": "5"
   }
 }
