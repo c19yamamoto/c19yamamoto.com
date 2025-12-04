@@ -5,6 +5,9 @@ on: [pull_request]
 jobs:
   pull-request-check:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     timeout-minutes: 15
 
     steps:
