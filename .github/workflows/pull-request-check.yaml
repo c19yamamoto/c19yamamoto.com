@@ -5,6 +5,9 @@ on: [pull_request]
 jobs:
   pull-request-check:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     timeout-minutes: 15
 
     steps:
@@ -22,3 +25,18 @@ jobs:
 
       - name: Build Project
         run: npm run build
+
+      # CDK Synth でホストゾーンの取得に使用する
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+
+      - name: Install CDK Dependencies
+        working-directory: cdk
+        run: npm ci
+
+      - name: Synth CDK
+        working-directory: cdk
+        run: npx cdk synth -c domainName=c19yamamoto.com
