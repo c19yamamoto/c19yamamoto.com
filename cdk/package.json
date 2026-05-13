@@ -8,21 +8,20 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk",
-    "postinstall": "npm audit fix"
+    "cdk": "cdk"
   },
   "devDependencies": {
     "@types/jest": "30.0.0",
-    "@types/node": "24.10.1",
-    "aws-cdk": "2.1033.0",
-    "jest": "30.2.0",
-    "ts-jest": "29.4.6",
+    "@types/node": "24.12.4",
+    "aws-cdk": "2.1121.0",
+    "jest": "30.4.2",
+    "ts-jest": "29.4.9",
     "ts-node": "10.9.2",
     "typescript": "5.9.3"
   },
   "dependencies": {
-    "@aws-solutions-constructs/aws-cloudfront-s3": "2.96.0",
-    "aws-cdk-lib": "2.231.0",
-    "constructs": "10.4.3"
+    "@aws-solutions-constructs/aws-cloudfront-s3": "2.101.0",
+    "aws-cdk-lib": "2.253.1",
+    "constructs": "10.6.0"
   }
 }

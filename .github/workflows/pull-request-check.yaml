@@ -2,7 +2,6 @@ name: Pull Request Check
 
 on:
   pull_request:
-  pull_request_target:
 
 jobs:
   pull-request-check:
@@ -14,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
