@@ -41,4 +41,4 @@ jobs:
 
       - name: Synth CDK
         working-directory: cdk
-        run: npx cdk synth -c domainName=c19yamamoto.com
+        run: ./node_modules/.bin/cdk synth -c domainName=c19yamamoto.com

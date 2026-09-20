@@ -38,4 +38,4 @@ jobs:
 
       - name: Deploy CDK Stack
         working-directory: cdk
-        run: npx cdk deploy --all --require-approval never -c domainName=c19yamamoto.com
+        run: ./node_modules/.bin/cdk deploy --all --require-approval never -c domainName=c19yamamoto.com
