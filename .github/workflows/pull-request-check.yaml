@@ -23,8 +23,33 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Build Project
-        run: npm run build
+      - name: Run Application Regression Tests
+        run: npm test
+
+  cdk-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: cdk/package-lock.json
+
+      - name: Install CDK Dependencies
+        working-directory: cdk
+        run: npm ci
+
+      - name: Run CDK Regression Tests
+        working-directory: cdk
+        run: npm test
 
   cdk-synth:
     # Fork and Dependabot PRs are untrusted and must not receive AWS credentials.

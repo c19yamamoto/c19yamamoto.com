@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "npm run build && npm run test:app",
+    "test:app": "node --test test/app.test.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "7.3.1",
