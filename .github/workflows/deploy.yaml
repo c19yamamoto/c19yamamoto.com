@@ -26,6 +26,9 @@ jobs:
       - name: Build Project
         run: npm run build
 
+      - name: Run Application Regression Tests
+        run: npm run test:app
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
@@ -35,6 +38,10 @@ jobs:
       - name: Install CDK Dependencies
         working-directory: cdk
         run: npm ci
+
+      - name: Run CDK Regression Tests
+        working-directory: cdk
+        run: npm test
 
       - name: Deploy CDK Stack
         working-directory: cdk
