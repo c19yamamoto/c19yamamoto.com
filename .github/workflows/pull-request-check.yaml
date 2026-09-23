@@ -44,7 +44,15 @@ jobs:
         with:
           node-version: "24"
           cache: "npm"
-          cache-dependency-path: cdk/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            cdk/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Project
+        run: npm run build
 
       - name: Install CDK Dependencies
         working-directory: cdk
