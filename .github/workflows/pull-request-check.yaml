@@ -27,8 +27,8 @@ jobs:
         run: npm run build
 
   cdk-synth:
-    # Fork PRs are untrusted and must not receive AWS credentials.
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    # Fork and Dependabot PRs are untrusted and must not receive AWS credentials.
+    if: github.event.pull_request.user.login != 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
