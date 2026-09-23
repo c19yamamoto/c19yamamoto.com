@@ -2,13 +2,11 @@ name: Pull Request Check
 
 on:
   pull_request:
-  pull_request_target:
 
 jobs:
   pull-request-check:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: read
     timeout-minutes: 15
 
@@ -28,16 +26,36 @@ jobs:
       - name: Build Project
         run: npm run build
 
+  cdk-synth:
+    # Fork PRs are untrusted and must not receive AWS credentials.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: cdk/package-lock.json
+
+      - name: Install CDK Dependencies
+        working-directory: cdk
+        run: npm ci
+
       # CDK Synth でホストゾーンの取得に使用する
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-region: ${{ secrets.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-
-      - name: Install CDK Dependencies
-        working-directory: cdk
-        run: npm ci
 
       - name: Synth CDK
         working-directory: cdk
