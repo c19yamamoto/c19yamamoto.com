@@ -15,21 +15,21 @@
     "@fortawesome/free-brands-svg-icons": "7.3.1",
     "@fortawesome/free-solid-svg-icons": "7.3.1",
     "@fortawesome/react-fontawesome": "3.5.0",
-    "aws-cdk": "2.1142.0",
-    "next": "16.4.1",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "sass": "1.105.0"
+    "aws-cdk": "2.1146.1",
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "sass": "1.106.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.7",
     "@playwright/test": "1.64.1",
     "@svgr/webpack": "8.1.0",
-    "@types/node": "26.6.2",
+    "@types/node": "26.6.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "eslint": "10.11.0",
-    "eslint-config-next": "16.3.6",
+    "eslint": "10.13.0",
+    "eslint-config-next": "16.4.3",
     "typescript": "7.0.2"
   }
 }
