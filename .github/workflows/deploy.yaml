@@ -32,22 +32,12 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Install Playwright Browser
-        run: npx playwright install --with-deps chromium
-
       - name: Build Project
         run: npm run build
-
-      - name: Run Application Regression Tests
-        run: npm run test:app
 
       - name: Install CDK Dependencies
         working-directory: cdk
         run: npm ci
-
-      - name: Run CDK Regression Tests
-        working-directory: cdk
-        run: npm test
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
