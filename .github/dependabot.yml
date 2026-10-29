@@ -1,0 +1,38 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "09:00"
+      timezone: Asia/Tokyo
+    groups:
+      root-npm:
+        patterns:
+          - "*"
+
+  - package-ecosystem: npm
+    directory: "/cdk"
+    schedule:
+      interval: daily
+      time: "09:00"
+      timezone: Asia/Tokyo
+    ignore:
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
+    groups:
+      cdk-npm:
+        patterns:
+          - "*"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "09:00"
+      timezone: Asia/Tokyo
+    groups:
+      github-actions:
+        patterns:
+          - "*"
