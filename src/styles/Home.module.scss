@@ -83,6 +83,31 @@
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: var(--gray-alpha-100);
+  background-image: linear-gradient(
+    100deg,
+    var(--gray-alpha-100) 30%,
+    var(--gray-alpha-200) 50%,
+    var(--gray-alpha-100) 70%
+  );
+  background-size: 200% 100%;
+  animation: profileImageShimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes profileImageShimmer {
+  from {
+    background-position: 100% 50%;
+  }
+
+  to {
+    background-position: -100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profileImage {
+    animation: none;
+  }
 }
 
 .profileName {
