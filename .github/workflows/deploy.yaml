@@ -52,7 +52,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-session-name: deploy-c19yamamoto-com-${{ github.run_id }}
-          allowed-account-ids: "549097216277"
+          allowed-account-ids: ${{ secrets.AWS_ACCOUNT_ID }}
 
       - name: Deploy CDK Stack
         working-directory: cdk
