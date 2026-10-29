@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "npm run build && npm run test:app",
-    "test:app": "node --test test/app.test.mjs"
+    "test:app": "playwright test"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "7.3.1",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "3",
+    "@playwright/test": "^1.64.1",
     "@svgr/webpack": "8.1.0",
     "@types/node": "26",
     "@types/react": "19",
