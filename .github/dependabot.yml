@@ -2,6 +2,9 @@ version: 2
 updates:
   - package-ecosystem: npm
     directory: "/"
+    commit-message:
+      prefix: "build(deps)"
+      prefix-development: "build(deps-dev)"
     schedule:
       interval: weekly
       day: saturday
@@ -14,6 +17,9 @@ updates:
 
   - package-ecosystem: npm
     directory: "/cdk"
+    commit-message:
+      prefix: "build(deps)"
+      prefix-development: "build(deps-dev)"
     schedule:
       interval: weekly
       day: saturday
@@ -33,6 +39,8 @@ updates:
 
   - package-ecosystem: github-actions
     directory: "/"
+    commit-message:
+      prefix: "ci(deps)"
     schedule:
       interval: weekly
       day: saturday
