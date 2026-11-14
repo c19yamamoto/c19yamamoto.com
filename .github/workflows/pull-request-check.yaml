@@ -2,6 +2,11 @@ name: Pull Request Check
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
 
 jobs:
   pull-request-check:
@@ -13,8 +18,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7.0.1
-        with:
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v7.1.0
@@ -25,11 +28,10 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Lint Commit Messages
+      - name: Lint Pull Request Title
         env:
-          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: npx commitlint --from "$PR_BASE_SHA" --to "$PR_HEAD_SHA" --verbose
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: printf '%s\n' "$PR_TITLE" | npx commitlint --verbose
 
       - name: Install Playwright Browser
         run: npx playwright install --with-deps chromium
