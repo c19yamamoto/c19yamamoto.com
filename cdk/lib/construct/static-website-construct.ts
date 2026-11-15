@@ -25,8 +25,7 @@ export class StaticWebsite extends Construct {
     this.cloudFrontToS3 = new CloudFrontToS3(this, 'CloudFrontToS3', {
       bucketProps: {
         bucketName: `${props.domainName}-static-website`,
-        removalPolicy: RemovalPolicy.DESTROY,
-        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.RETAIN,
       },
       cloudFrontDistributionProps: {
         domainNames: [props.domainName],

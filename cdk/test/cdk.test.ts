@@ -71,8 +71,9 @@ test('creates a private S3 origin with the expected website bucket settings', ()
   );
 
   expect(websiteBucket).toBeDefined();
-  expect(websiteBucket?.DeletionPolicy).toBe('Delete');
-  expect(websiteBucket?.UpdateReplacePolicy).toBe('Delete');
+  expect(websiteBucket?.DeletionPolicy).toBe('Retain');
+  expect(websiteBucket?.UpdateReplacePolicy).toBe('Retain');
+  template.resourceCountIs('Custom::S3AutoDeleteObjects', 0);
 });
 
 test('configures HTTPS CloudFront delivery and Route53 aliasing', () => {
