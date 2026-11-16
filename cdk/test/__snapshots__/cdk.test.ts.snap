@@ -191,64 +191,6 @@ exports[`matches the synthesized CloudFormation template snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
-      "DependsOn": [
-        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "6dba3da2af96b69a187d689b326e5272b9abc8671c0427845a8bed243e02877d.zip",
-        },
-        "Description": {
-          "Fn::Join": [
-            "",
-            [
-              "Lambda function for auto-deleting objects in ",
-              {
-                "Ref": "WebsiteCloudFrontToS3S3Bucket18AD4248",
-              },
-              " S3 bucket.",
-            ],
-          ],
-        },
-        "Handler": "index.handler",
-        "MemorySize": 128,
-        "Role": {
-          "Fn::GetAtt": [
-            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs24.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
     "WebsiteAliasRecord373AF9B6": {
       "Properties": {
         "AliasTarget": {
@@ -450,7 +392,7 @@ exports[`matches the synthesized CloudFormation template snapshot 1`] = `
       "Type": "AWS::S3::BucketPolicy",
     },
     "WebsiteCloudFrontToS3S3Bucket18AD4248": {
-      "DeletionPolicy": "Delete",
+      "DeletionPolicy": "Retain",
       "Properties": {
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
@@ -483,10 +425,6 @@ exports[`matches the synthesized CloudFormation template snapshot 1`] = `
         },
         "Tags": [
           {
-            "Key": "aws-cdk:auto-delete-objects",
-            "Value": "true",
-          },
-          {
             "Key": "aws-cdk:cr-owned:67bfaeff",
             "Value": "true",
           },
@@ -496,26 +434,7 @@ exports[`matches the synthesized CloudFormation template snapshot 1`] = `
         },
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "WebsiteCloudFrontToS3S3BucketAutoDeleteObjectsCustomResourceD5BD2FF4": {
-      "DeletionPolicy": "Delete",
-      "DependsOn": [
-        "WebsiteCloudFrontToS3S3BucketPolicy59EB757C",
-      ],
-      "Properties": {
-        "BucketName": {
-          "Ref": "WebsiteCloudFrontToS3S3Bucket18AD4248",
-        },
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "Custom::S3AutoDeleteObjects",
-      "UpdateReplacePolicy": "Delete",
+      "UpdateReplacePolicy": "Retain",
     },
     "WebsiteCloudFrontToS3S3BucketPolicy59EB757C": {
       "Metadata": {
@@ -544,45 +463,6 @@ exports[`matches the synthesized CloudFormation template snapshot 1`] = `
               "Effect": "Deny",
               "Principal": {
                 "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "WebsiteCloudFrontToS3S3Bucket18AD4248",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "WebsiteCloudFrontToS3S3Bucket18AD4248",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": [
-                "s3:PutBucketPolicy",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::GetAtt": [
-                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-                    "Arn",
-                  ],
-                },
               },
               "Resource": [
                 {
