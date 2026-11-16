@@ -31,6 +31,7 @@ export class StaticWebsite extends Construct {
         domainNames: [props.domainName],
         certificate: props.certificate,
         defaultRootObject: 'index.html',
+        enableLogging: false,
       },
       insertHttpSecurityHeaders: false,
       logS3AccessLogs: false, 

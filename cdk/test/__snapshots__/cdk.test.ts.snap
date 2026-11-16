@@ -242,14 +242,6 @@ exports[`matches the synthesized CloudFormation template snapshot 1`] = `
           "Enabled": true,
           "HttpVersion": "http2",
           "IPV6Enabled": true,
-          "Logging": {
-            "Bucket": {
-              "Fn::GetAtt": [
-                "WebsiteCloudFrontToS3CloudfrontLoggingBucketF02A63E9",
-                "RegionalDomainName",
-              ],
-            },
-          },
           "Origins": [
             {
               "DomainName": {
@@ -310,86 +302,6 @@ exports[`matches the synthesized CloudFormation template snapshot 1`] = `
         },
       },
       "Type": "AWS::CloudFront::OriginAccessControl",
-    },
-    "WebsiteCloudFrontToS3CloudfrontLoggingBucketF02A63E9": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "AccessControl": "LogDeliveryWrite",
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256",
-              },
-            },
-          ],
-        },
-        "OwnershipControls": {
-          "Rules": [
-            {
-              "ObjectOwnership": "ObjectWriter",
-            },
-          ],
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true,
-        },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "WebsiteCloudFrontToS3CloudfrontLoggingBucketPolicy5BF04B0B": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "WebsiteCloudFrontToS3CloudfrontLoggingBucketF02A63E9",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "WebsiteCloudFrontToS3CloudfrontLoggingBucketF02A63E9",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "WebsiteCloudFrontToS3CloudfrontLoggingBucketF02A63E9",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
     },
     "WebsiteCloudFrontToS3S3Bucket18AD4248": {
       "DeletionPolicy": "Retain",
