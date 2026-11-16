@@ -52,7 +52,7 @@ beforeAll(() => {
 test('creates a private S3 origin with the expected website bucket settings', () => {
   const template = websiteTemplate;
 
-  template.resourceCountIs('AWS::S3::Bucket', 1);
+  template.resourceCountIs('AWS::S3::Bucket', 2);
   template.hasResourceProperties('AWS::S3::Bucket', {
     BucketName: `${domainName}-static-website`,
     PublicAccessBlockConfiguration: {
@@ -98,17 +98,6 @@ test('configures HTTPS CloudFront delivery and Route53 aliasing', () => {
       HostedZoneId: Match.anyValue(),
     }),
   });
-});
-
-test('disables CloudFront access logging', () => {
-  const resources = websiteTemplate.toJSON().Resources as Record<string, Resource>;
-  const distribution = Object.values(resources).find(
-    (resource) => resource.Type === 'AWS::CloudFront::Distribution',
-  );
-
-  expect(distribution?.Properties?.DistributionConfig).not.toHaveProperty(
-    'Logging',
-  );
 });
 
 test('invalidates CloudFront after deploying the static export', () => {
