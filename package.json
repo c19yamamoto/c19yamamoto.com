@@ -30,7 +30,7 @@
     "@types/node": "26.6.6",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "awesome-emulator-cli": "git+https://github.com/c19yamamoto/awesome-emulator-cli.git#725b1c520dbe9ac7761a8edae4a949a5040ab93e",
+    "awesome-emulator-cli": "0.1.1",
     "eslint": "10.14.0",
     "eslint-config-next": "16.4.6",
     "typescript": "7.0.2"
