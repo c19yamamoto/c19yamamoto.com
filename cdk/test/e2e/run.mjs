@@ -80,9 +80,28 @@ try {
     `domainName=${domainName}`,
     '--context',
     'certificateArn=arn:aws:acm:us-east-1:000000000000:certificate/00000000-0000-0000-0000-000000000000',
+    '--context',
+    'deployStaticAssets=false',
   ]);
 
   const bucketName = `${domainName}-static-website`;
+  run(
+    'aws',
+    [
+      's3api',
+      'put-object',
+      '--bucket',
+      bucketName,
+      '--key',
+      'index.html',
+      '--body',
+      builtIndex,
+      '--content-type',
+      'text/html',
+      '--no-cli-pager',
+    ],
+    repositoryRoot,
+  );
   run(
     'aws',
     [

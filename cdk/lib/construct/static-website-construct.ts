@@ -12,12 +12,13 @@ export interface StaticWebsiteProps {
   readonly hostedZone: route53.IHostedZone;
   readonly certificate: acm.ICertificate;
   readonly buildOutputPath?: string;
+  readonly deployStaticAssets?: boolean;
 }
 
 export class StaticWebsite extends Construct {
   public readonly cloudFrontToS3: CloudFrontToS3;
   public readonly dnsRecord: route53.ARecord;
-  public readonly deployment: s3deploy.BucketDeployment;
+  public readonly deployment?: s3deploy.BucketDeployment;
 
   constructor(scope: Construct, id: string, props: StaticWebsiteProps) {
     super(scope, id);
@@ -50,12 +51,14 @@ export class StaticWebsite extends Construct {
       }),
     });
 
-    const buildOutputPath = props.buildOutputPath ?? '../../../out';
-    this.deployment = new s3deploy.BucketDeployment(this, 'DeployWebsite', {
-      sources: [s3deploy.Source.asset(path.join(__dirname, buildOutputPath))],
-      destinationBucket: this.cloudFrontToS3.s3BucketInterface,
-      distribution: this.cloudFrontToS3.cloudFrontWebDistribution,
-      distributionPaths: ['/*'],
-    });
+    if (props.deployStaticAssets !== false) {
+      const buildOutputPath = props.buildOutputPath ?? '../../../out';
+      this.deployment = new s3deploy.BucketDeployment(this, 'DeployWebsite', {
+        sources: [s3deploy.Source.asset(path.join(__dirname, buildOutputPath))],
+        destinationBucket: this.cloudFrontToS3.s3BucketInterface,
+        distribution: this.cloudFrontToS3.cloudFrontWebDistribution,
+        distributionPaths: ['/*'],
+      });
+    }
   }
 }

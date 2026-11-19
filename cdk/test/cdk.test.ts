@@ -16,7 +16,7 @@ type Resource = {
   UpdateReplacePolicy?: string;
 };
 
-function createWebsiteTemplate(): Template {
+function createWebsiteTemplate(deployStaticAssets = true): Template {
   const app = new cdk.App();
   const stack = new cdk.Stack(app, 'StaticWebsiteTestStack');
   const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
@@ -38,6 +38,7 @@ function createWebsiteTemplate(): Template {
     hostedZone,
     certificate,
     buildOutputPath: '../../test/fixtures/site',
+    deployStaticAssets,
   });
 
   return Template.fromStack(stack);
@@ -115,6 +116,12 @@ test('invalidates CloudFront after deploying the static export', () => {
       WaitForDistributionInvalidation: true,
     }),
   );
+});
+
+test('can disable asset deployment for environments without custom resources', () => {
+  const template = createWebsiteTemplate(false);
+
+  template.resourceCountIs('Custom::CDKBucketDeployment', 0);
 });
 
 test('matches the synthesized CloudFormation template snapshot', () => {

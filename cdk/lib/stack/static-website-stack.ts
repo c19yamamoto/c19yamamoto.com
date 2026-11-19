@@ -20,6 +20,7 @@ export class StaticWebsiteStack extends cdk.Stack {
       domainName: this.domainName,
       hostedZone,
       certificate: this.certificate,
+      deployStaticAssets: this.node.tryGetContext('deployStaticAssets') !== 'false',
     });
   }
 
