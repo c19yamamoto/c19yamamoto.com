@@ -96,6 +96,7 @@ test('configures HTTPS CloudFront delivery and Route53 aliasing', () => {
     AliasTarget: Match.objectLike({
       DNSName: Match.anyValue(),
       HostedZoneId: Match.anyValue(),
+      EvaluateTargetHealth: false,
     }),
   });
 });

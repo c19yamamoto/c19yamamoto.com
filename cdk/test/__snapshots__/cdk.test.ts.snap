@@ -200,6 +200,7 @@ exports[`matches the synthesized CloudFormation template snapshot 1`] = `
               "DomainName",
             ],
           },
+          "EvaluateTargetHealth": false,
           "HostedZoneId": {
             "Fn::FindInMap": [
               "AWSCloudFrontPartitionHostedZoneIdMap",

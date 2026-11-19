@@ -37,11 +37,17 @@ export class StaticWebsite extends Construct {
       logCloudFrontAccessLog: false,
     });
 
+    const cloudFrontTarget = new targets.CloudFrontTarget(
+      this.cloudFrontToS3.cloudFrontWebDistribution,
+    );
     this.dnsRecord = new route53.ARecord(this, 'AliasRecord', {
       zone: props.hostedZone,
-      target: route53.RecordTarget.fromAlias(
-        new targets.CloudFrontTarget(this.cloudFrontToS3.cloudFrontWebDistribution)
-      ),
+      target: route53.RecordTarget.fromAlias({
+        bind: (record, zone) => ({
+          ...cloudFrontTarget.bind(record, zone),
+          evaluateTargetHealth: false,
+        }),
+      }),
     });
 
     const buildOutputPath = props.buildOutputPath ?? '../../../out';
