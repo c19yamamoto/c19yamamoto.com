@@ -38,6 +38,11 @@ export class StaticWebsiteStack extends cdk.Stack {
   }
 
   private createCertificate(hostedZone: route53.IHostedZone): acm.ICertificate {
+    const certificateArn = this.node.tryGetContext('certificateArn');
+    if (typeof certificateArn === 'string' && certificateArn.length > 0) {
+      return acm.Certificate.fromCertificateArn(this, 'Certificate', certificateArn);
+    }
+
     return new acm.Certificate(this, 'Certificate', {
       domainName: this.domainName,
       validation: acm.CertificateValidation.fromDns(hostedZone),
