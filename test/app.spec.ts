@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 const socialLinks = [
   { name: "X (Twitter)", href: "https://x.com/yamaharTech" },
   { name: "GitHub", href: "https://github.com/c19yamamoto" },
+  { name: "npm", href: "https://www.npmjs.com/~c19yamamoto" },
   { name: "Zenn", href: "https://zenn.dev/shebang" },
   { name: "Gmail", href: "mailto:c19yamamoto@gmail.com" },
   { name: "connpass", href: "https://connpass.com/user/c19yamamoto/" },
