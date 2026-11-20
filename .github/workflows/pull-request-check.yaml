@@ -67,3 +67,39 @@ jobs:
       - name: Run CDK Regression Tests
         working-directory: cdk
         run: npm test
+
+  cdk-emulator-e2e:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            cdk/package-lock.json
+
+      - name: Install Application Dependencies
+        run: npm ci
+
+      - name: Install CDK Dependencies
+        working-directory: cdk
+        run: npm ci
+
+      - name: Build Static Site
+        run: npm run build
+
+      - name: Build CDK App
+        working-directory: cdk
+        run: npm run build
+
+      - name: Run CDK End-to-End Test on AWS Emulator
+        run: npm run test:cdk:e2e

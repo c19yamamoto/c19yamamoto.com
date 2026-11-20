@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "npm run build && npm run test:app",
-    "test:app": "playwright test"
+    "test:app": "playwright test",
+    "test:cdk:e2e": "awesome-emulator run --telemetry off --version 1.0.533 --region us-east-1 -- node cdk/test/e2e/run.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "7.3.1",
@@ -29,6 +30,7 @@
     "@types/node": "26.6.6",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "awesome-emulator-cli": "0.5.1",
     "eslint": "10.14.0",
     "eslint-config-next": "16.4.6",
     "typescript": "7.0.2"

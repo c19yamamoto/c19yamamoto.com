@@ -12,12 +12,13 @@ export interface StaticWebsiteProps {
   readonly hostedZone: route53.IHostedZone;
   readonly certificate: acm.ICertificate;
   readonly buildOutputPath?: string;
+  readonly deployStaticAssets?: boolean;
 }
 
 export class StaticWebsite extends Construct {
   public readonly cloudFrontToS3: CloudFrontToS3;
   public readonly dnsRecord: route53.ARecord;
-  public readonly deployment: s3deploy.BucketDeployment;
+  public readonly deployment?: s3deploy.BucketDeployment;
 
   constructor(scope: Construct, id: string, props: StaticWebsiteProps) {
     super(scope, id);
@@ -37,19 +38,27 @@ export class StaticWebsite extends Construct {
       logCloudFrontAccessLog: false,
     });
 
+    const cloudFrontTarget = new targets.CloudFrontTarget(
+      this.cloudFrontToS3.cloudFrontWebDistribution,
+    );
     this.dnsRecord = new route53.ARecord(this, 'AliasRecord', {
       zone: props.hostedZone,
-      target: route53.RecordTarget.fromAlias(
-        new targets.CloudFrontTarget(this.cloudFrontToS3.cloudFrontWebDistribution)
-      ),
+      target: route53.RecordTarget.fromAlias({
+        bind: (record, zone) => ({
+          ...cloudFrontTarget.bind(record, zone),
+          evaluateTargetHealth: false,
+        }),
+      }),
     });
 
-    const buildOutputPath = props.buildOutputPath ?? '../../../out';
-    this.deployment = new s3deploy.BucketDeployment(this, 'DeployWebsite', {
-      sources: [s3deploy.Source.asset(path.join(__dirname, buildOutputPath))],
-      destinationBucket: this.cloudFrontToS3.s3BucketInterface,
-      distribution: this.cloudFrontToS3.cloudFrontWebDistribution,
-      distributionPaths: ['/*'],
-    });
+    if (props.deployStaticAssets !== false) {
+      const buildOutputPath = props.buildOutputPath ?? '../../../out';
+      this.deployment = new s3deploy.BucketDeployment(this, 'DeployWebsite', {
+        sources: [s3deploy.Source.asset(path.join(__dirname, buildOutputPath))],
+        destinationBucket: this.cloudFrontToS3.s3BucketInterface,
+        distribution: this.cloudFrontToS3.cloudFrontWebDistribution,
+        distributionPaths: ['/*'],
+      });
+    }
   }
 }
