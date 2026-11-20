@@ -26,9 +26,7 @@ const environment = {
   ...process.env,
   AWS_EMULATOR_E2E_DOMAIN: domainName,
   CDK_DEFAULT_ACCOUNT: '000000000000',
-  CDK_DEFAULT_REGION: 'us-east-1',
-  AWS_REGION: 'us-east-1',
-  AWS_DEFAULT_REGION: 'us-east-1',
+  CDK_DEFAULT_REGION: process.env.AWS_REGION ?? 'us-east-1',
 };
 
 function run(command, args, cwd = cdkDirectory) {
